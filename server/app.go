@@ -10,8 +10,8 @@ import (
 	"net/http"
 )
 
-//go:embed ./webapp/dist/webapp/*
-var webapp embed.FS
+//go:embed static
+var static embed.FS
 
 type student struct {
 	ID   string `gorm:"primary_key" json:"id"`
@@ -30,7 +30,7 @@ func (a *App) start() {
 	a.r.HandleFunc("/students", a.addStudent).Methods("POST")
 	a.r.HandleFunc("/students/{id}", a.updateStudent).Methods("PUT")
 	a.r.HandleFunc("/students/{id}", a.deleteStudent).Methods("DELETE")
-	a.r.PathPrefix("/").Handler(http.FileServer(http.FS(webapp)))
+	a.r.PathPrefix("/").Handler(http.FileServer(http.FS(static)))
 	log.Fatal(http.ListenAndServe(":8080", a.r))
 }
 
