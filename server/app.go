@@ -12,7 +12,7 @@ import (
 	"net/http"
 )
 
-//go:embed static/*
+//go:embed static
 var static embed.FS
 
 type student struct {
@@ -36,7 +36,7 @@ func (a *App) start() {
 	if err != nil {
 		fmt.Println(err)
 	}
-	a.r.Handle("/", http.FileServer(http.FS(webapp)))
+	a.r.PathPrefix("/").Handler(http.FileServer(http.FS(webapp)))
 	log.Fatal(http.ListenAndServe(":8080", a.r))
 }
 

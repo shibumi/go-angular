@@ -4,8 +4,9 @@ import (
 	"bytes"
 	"encoding/json"
 	"github.com/gorilla/mux"
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/sqlite"
+	"gorm.io/driver/sqlite"
+	_ "gorm.io/driver/sqlite"
+	"gorm.io/gorm"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -73,7 +74,7 @@ func TestDeleteStudent(t *testing.T) {
 }
 
 func initApp() App {
-	db, _ := gorm.Open("sqlite3", ":memory:")
+	db, _ := gorm.Open(sqlite.Open("gorm.db"))
 	db.AutoMigrate(&student{})
 	return App{db: db}
 }
