@@ -62,3 +62,12 @@ typings/
 
 # next.js build output
 .next
+
+# ignore gorm.db
+gorm.db
+
+# ignore binary
+go-angular
+
+# ignore static folder
+static
