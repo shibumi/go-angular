@@ -13,7 +13,7 @@ I have modified the following parts:
 1. I have substitutes the postgres DB against a sqlite DB
 2. I have removed the static web directory and introduced the `embed` module instead.
 3. I have modified the outputPath for angular `ng build --prod` moves the assets to `../server/static` now.
-
+4. The Dockerfile makes use of Google's distroless images now.
 
 Below is the original introduction of Shpota's README:
 
