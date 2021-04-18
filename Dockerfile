@@ -4,14 +4,12 @@ COPY webapp /webapp
 WORKDIR webapp
 RUN npm install && ng build --prod
 
-FROM golang:1.13.1-alpine AS GO_BUILD
-COPY server /server
-WORKDIR /server
-RUN go build -o /go/bin/server
+FROM golang:1.16 as GO_BUILD
+WORKDIR /go/src/app
+ADD server /go/src/app
+COPY --from=ANGULAR_BUILD /server/static /go/src/app
+RUN go build -o /go/bin/app
 
-FROM alpine:3.10
-WORKDIR app
-COPY --from=ANGULAR_BUILD /webapp/dist/webapp/* ./webapp/dist/webapp/
-COPY --from=GO_BUILD /go/bin/server ./
-RUN ls
-CMD ./server
+FROM gcr.io/distroless/base
+COPY --from=GO_BUILD /go/bin/app /
+CMD ["/app"]
