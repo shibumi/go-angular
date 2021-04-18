@@ -1,6 +1,6 @@
-module sashashpota.com/go-angular
+module github.com/shibumi/go-angular
 
-go 1.13
+go 1.16
 
 require (
 	github.com/google/uuid v1.1.1

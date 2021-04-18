@@ -1,6 +1,7 @@
 package main
 
 import (
+	"embed"
 	"encoding/json"
 	"github.com/google/uuid"
 	"github.com/gorilla/mux"
@@ -9,6 +10,9 @@ import (
 	"log"
 	"net/http"
 )
+
+//go:embed ./webapp/dist/webapp/*
+var webapp embed.FS
 
 type student struct {
 	ID   string `gorm:"primary_key" json:"id"`
@@ -27,7 +31,7 @@ func (a *App) start() {
 	a.r.HandleFunc("/students", a.addStudent).Methods("POST")
 	a.r.HandleFunc("/students/{id}", a.updateStudent).Methods("PUT")
 	a.r.HandleFunc("/students/{id}", a.deleteStudent).Methods("DELETE")
-	a.r.PathPrefix("/").Handler(http.FileServer(http.Dir("./webapp/dist/webapp/")))
+	a.r.PathPrefix("/").Handler(http.FileServer(http.FS(webapp)))
 	log.Fatal(http.ListenAndServe(":8080", a.r))
 }
 
@@ -68,7 +72,7 @@ func (a *App) updateStudent(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&s)
 	if err != nil {
 		sendErr(w, http.StatusBadRequest, err.Error())
-		return;
+		return
 	}
 	s.ID = mux.Vars(r)["id"]
 	err = a.db.Save(&s).Error
