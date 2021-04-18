@@ -3,14 +3,16 @@ package main
 import (
 	"embed"
 	"encoding/json"
+	"fmt"
 	"github.com/google/uuid"
 	"github.com/gorilla/mux"
 	"gorm.io/gorm"
+	"io/fs"
 	"log"
 	"net/http"
 )
 
-//go:embed static
+//go:embed static/*
 var static embed.FS
 
 type student struct {
@@ -30,7 +32,11 @@ func (a *App) start() {
 	a.r.HandleFunc("/students", a.addStudent).Methods("POST")
 	a.r.HandleFunc("/students/{id}", a.updateStudent).Methods("PUT")
 	a.r.HandleFunc("/students/{id}", a.deleteStudent).Methods("DELETE")
-	a.r.PathPrefix("/").Handler(http.FileServer(http.FS(static)))
+	webapp, err := fs.Sub(static, "static")
+	if err != nil {
+		fmt.Println(err)
+	}
+	a.r.Handle("/", http.FileServer(http.FS(webapp)))
 	log.Fatal(http.ListenAndServe(":8080", a.r))
 }
 
