@@ -36,6 +36,10 @@ func (a *App) start() {
 	if err != nil {
 		fmt.Println(err)
 	}
+	// We need to use Gorilla Mux' PathPrefix function here, because the Pathprefix
+	// adds a wildcard to the route eg: /*, otherwise we would only route to "/"
+	// Hence the error with 404-returning JS files before got thrown, because
+	// Gorilla Mux had no route to these JS files.
 	a.r.PathPrefix("/").Handler(http.FileServer(http.FS(webapp)))
 	log.Fatal(http.ListenAndServe(":8080", a.r))
 }
